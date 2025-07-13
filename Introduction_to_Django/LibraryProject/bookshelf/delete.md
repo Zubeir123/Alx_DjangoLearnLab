@@ -1,0 +1,5 @@
+```python
+book = Book.objects.get(title="1984")
+book.delete()
+# Expected Output: (1, {'bookshelf.Book': 1})
+```
