@@ -12,7 +12,7 @@ Django provides an Object-Relational Mapping (ORM) to interact with the database
 using Python code instead of SQL.
 
 ### ⚙️ Common Field Types
-
+```
 Field Type	 ----------->  Description
 CharField	 ----------->  Short text
 TextField	 ----------->  Long text
@@ -25,9 +25,9 @@ BooleanField ----------->  True/False
 ForeignKey	 ----------->  One-to-many relationship
 ManyToMany   ----------->  Many-to-many relationship
 Field	   
+```
 
-
-### 3️⃣ 🔍 Querying with Django ORM
+### ⃣ 🔍 Querying with Django ORM
 
 🔸 Create and save data
 ```python
@@ -82,7 +82,7 @@ p.objects.all().delete()
 Product.objects.order_by('-price')  # Descending
 ```
 
-### 4️⃣ 📝 Using Models with Forms
+### ⃣ 📝 Using Models with Forms
 
 #### Create a ModelForm
 
