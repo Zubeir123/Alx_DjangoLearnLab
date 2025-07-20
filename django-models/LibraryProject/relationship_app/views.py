@@ -1,9 +1,18 @@
 from .models import Book
 from .models import Library
+from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
 from django.contrib.auth import login
-from .forms import RegisterForm
+
+class RegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
 
 def list_books(request):
       books = Book.objects.all()
@@ -22,14 +31,14 @@ class LibraryDetailView(DetailView):
         return context
 
 
-# def register(request):
-#     if request.method == 'POST':
-#         form = RegisterForm(request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             login(request, user)
-#             return redirect('book_list')
-#     else:
-#         form = RegisterForm()
-#
-#     return render(request, 'relationship_app/register.html', {'form': form})
+def register(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('book_list')
+    else:
+        form = RegisterForm()
+
+    return render(request, 'relationship_app/register.html', {'form': form})
