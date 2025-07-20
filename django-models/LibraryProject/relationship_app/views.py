@@ -1,7 +1,9 @@
 from .models import Book
 from .models import Library
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
+from django.contrib.auth import login
+from .forms import RegisterForm
 
 def list_books(request):
       books = Book.objects.all()
@@ -20,26 +22,14 @@ class LibraryDetailView(DetailView):
         return context
 
 
+def register(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('book_list')
+    else:
+        form = RegisterForm()
 
-
-
-
-
-
-
-
-
-
-# from django.views.generic import DetailView
-# from .models import Book
-#
-# class BookDetailView(DetailView):
-#   """A class-based view for displaying details of a specific book."""
-#   model = Book
-#   template_name = 'books/book_detail.html'
-#
-#   def get_context_data(self, **kwargs):
-#     """Injects additional context data specific to the book."""
-#     context = super().get_context_data(**kwargs)  # Get default context data
-#     book = self.get_object()  # Retrieve the current book instance
-#     context['average_rating'] = book.get_average_rating()
+    return render(request, 'relationship_app/register.html', {'form': form})
