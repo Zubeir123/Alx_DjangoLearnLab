@@ -15,17 +15,28 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-zat)^=uv$6mf6nyqcsrhhtar+7!-5%ad6ze9476hs83ouvt+$e'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+DEBUG = False  # Turn off debug in production
+
+ALLOWED_HOSTS = ['yourdomain.com', 'www.yourdomain.com']  # Set to your real domain
+
+# --- Browser security headers ---
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# --- Cookie Security ---
+SESSION_COOKIE_SECURE = True     # Only send over HTTPS
+CSRF_COOKIE_SECURE = True        # Only send over HTTPS
+SECURE_HSTS_SECONDS = 31536000   # Use HSTS for one year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# --- CSRF Failure Handling ---
+CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
 
 
 # Application definition
@@ -50,6 +61,17 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+INSTALLED_APPS += ['csp']
+
+MIDDLEWARE += [
+    'csp.middleware.CSPMiddleware',
+]
+
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_STYLE_SRC = ("'self'", 'https://fonts.googleapis.com')
+CSP_SCRIPT_SRC = ("'self'", 'https://cdnjs.cloudflare.com')  # adjust to your needs
+
 
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
 
