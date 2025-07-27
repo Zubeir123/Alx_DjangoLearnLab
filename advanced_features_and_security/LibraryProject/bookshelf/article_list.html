@@ -1,0 +1,18 @@
+<h2>Articles</h2>
+{% for article in articles %}
+  <h3>{{ article.title }}</h3>
+  <p>{{ article.content }}</p>
+  {% if perms.blog.can_edit %}
+    <a href="{% url 'article_edit' article.pk %}">Edit</a>
+  {% endif %}
+  {% if perms.blog.can_delete %}
+    <form method="POST" action="{% url 'article_delete' article.pk %}">
+      {% csrf_token %}
+      <button type="submit">Delete</button>
+    </form>
+  {% endif %}
+{% endfor %}
+
+{% if perms.blog.can_create %}
+  <a href="{% url 'article_create' %}">Create New Article</a>
+{% endif %}
