@@ -51,7 +51,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-AUTH_USER_MODEL = 'relationship_app.CustomUser'
+AUTH_USER_MODEL = 'relationship_app.CustomUser, bookshelf.CustomUser'
 
 ROOT_URLCONF = 'LibraryProject.urls'
 
