@@ -23,6 +23,7 @@ class CustomUserAdmin(UserAdmin):
         }),
     )
 
+admin.site.register(CustomUser, CustomUserAdmin)
 
 class Command(BaseCommand):
     help = "Set up groups and assign permissions"
