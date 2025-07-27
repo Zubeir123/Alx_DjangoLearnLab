@@ -1,3 +1,4 @@
+from .forms import BookForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required
 from .models import Book
@@ -10,29 +11,20 @@ def book_list(request):
 
 @permission_required('bookshelf.can_create', raise_exception=True)
 def book_create(request):
-    if request.method == 'POST':
-        title = request.POST.get('title')
-        author = request.POST.get('author')
-        published_date = request.POST.get('published_date')  # format: YYYY-MM-DD
-
-        if title and author and published_date:
-            Book.objects.create(title=title, author=author, published_date=published_date)
-            return redirect('book_list')
-
-    return render(request, 'bookshelf/book_form.html')
-
+    form = BookForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        return redirect('book_list')
+    return render(request, 'bookshelf/book_form.html', {'form': form})
 
 @permission_required('bookshelf.can_edit', raise_exception=True)
 def book_edit(request, pk):
     book = get_object_or_404(Book, pk=pk)
-    if request.method == 'POST':
-        book.title = request.POST.get('title')
-        book.author = request.POST.get('author')
-        book.published_date = request.POST.get('published_date')
-        book.save()
+    form = BookForm(request.POST or None, instance=book)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
         return redirect('book_list')
-    return render(request, 'bookshelf/book_form.html', {'book': book})
-
+    return render(request, 'bookshelf/book_form.html', {'form': form})
 
 @permission_required('bookshelf.can_delete', raise_exception=True)
 def book_delete(request, pk):
