@@ -48,4 +48,4 @@ def example_form_view(request):
     if request.method == 'POST' and form.is_valid():
         # Normally you’d save or process data here
         return redirect('book_list')
-    return render(request, 'bookshelf/example_form.html', {'form': form})
+    return render(request, 'bookshelf/form_example.html', {'form': form})
