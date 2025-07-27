@@ -41,6 +41,7 @@ CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
 # Security: Enforce HTTPS by redirecting all HTTP requests
 SECURE_SSL_REDIRECT = True  # Redirect HTTP to HTTPS
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 
