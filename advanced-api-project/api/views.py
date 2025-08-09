@@ -1,70 +1,57 @@
-from rest_framework import generics, permissions, status
-from rest_framework.response import Response
+from rest_framework import generics, permissions
 from .models import Book
 from .serializers import BookSerializer
+from rest_framework import filters
 
-
+# List all books
 class BookListView(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.AllowAny]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'author__name']  # Allows search like ?search=title
 
 
+# Retrieve a single book by ID
 class BookDetailView(generics.RetrieveAPIView):
+    """
+    Returns a single Book instance by ID.
+    Accessible to everyone (read-only).
+    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.AllowAny]
 
 
+# Create a new book
 class BookCreateView(generics.CreateAPIView):
+    """
+    Creates a new Book instance.
+    Only authenticated users can create.
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Must be logged in
+
+
+# Update an existing book
+class BookUpdateView(generics.UpdateAPIView):
+    """
+    Updates a Book instance.
+    Only authenticated users can update.
+    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
-class BookUpdateNoPKView(generics.UpdateAPIView):
+# Delete a book
+class BookDeleteView(generics.DestroyAPIView):
     """
-    Updates a Book without specifying pk in URL.
-    Book ID must be sent in the request data.
-    """
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def update(self, request, *args, **kwargs):
-        book_id = request.data.get('id')
-        if not book_id:
-            return Response({"error": "Book ID is required."}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            book = Book.objects.get(pk=book_id)
-        except Book.DoesNotExist:
-            return Response({"error": "Book not found."}, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = self.get_serializer(book, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
-
-
-class BookDeleteNoPKView(generics.DestroyAPIView):
-    """
-    Deletes a Book without specifying pk in URL.
-    Book ID must be sent in the request data.
+    Deletes a Book instance.
+    Only authenticated users can delete.
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAdminUser]
 
-    def delete(self, request, *args, **kwargs):
-        book_id = request.data.get('id')
-        if not book_id:
-            return Response({"error": "Book ID is required."}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            book = Book.objects.get(pk=book_id)
-        except Book.DoesNotExist:
-            return Response({"error": "Book not found."}, status=status.HTTP_404_NOT_FOUND)
-
-        book.delete()
-        return Response({"message": "Book deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
