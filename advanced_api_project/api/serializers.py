@@ -1,35 +1,27 @@
 from rest_framework import serializers
+from django.utils import timezone
 from .models import Author, Book
-import datetime
 
-# Serializer for the Book model
-# This serializer includes all fields and validates that publication_year is not in the future.
+
 class BookSerializer(serializers.ModelSerializer):
-
-    # noinspection PyMethodMayBeStatic
     class Meta:
         model = Book
-        fields = '__all__'  # Serialize all fields in the Book model
+        fields = '__all__'  # Serialize all fields: title, publication_year, author
 
-        # Object-level validation
-        def validate(self, attrs):
-            publication_year = attrs.get('publication_year')
-            current_year = datetime.datetime.now().year
-
-            if publication_year > current_year:
-                raise serializers.ValidationError({
-                    "publication_year": "Publication year cannot be in the future."
-                })
-
-            return attrs
+    def validate_publication_year(self, value):
+        """
+        Custom validation to ensure publication year is not in the future.
+        """
+        current_year = timezone.now().year
+        if value > current_year:
+            raise serializers.ValidationError("Publication year cannot be in the future.")
+        return value
 
 
-# Serializer for the Author model
-# Includes the author's name and a nested list of their books using BookSerializer
 class AuthorSerializer(serializers.ModelSerializer):
-    # Nested serialization: books are serialized using BookSerializer
+    # Nested serializer to include all books for this author
     books = BookSerializer(many=True, read_only=True)
 
     class Meta:
         model = Author
-        fields = ['name', 'books']  # Only include name and related books
+        fields = ['name', 'books']
