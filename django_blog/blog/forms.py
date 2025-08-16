@@ -1,7 +1,17 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Profile, Post
+
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content']  # author is set automatically in the view
+        widgets = {
+            'title': forms.TextInput(attrs={'placeholder': 'Enter a catchy title'}),
+            'content': forms.Textarea(attrs={'rows': 10, 'placeholder': 'Write your post...'}),
+        }
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
