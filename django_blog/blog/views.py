@@ -2,9 +2,12 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
-from django.shortcuts import render, redirect
 
+from django.shortcuts import render, redirect,  get_object_or_404
 from .forms import RegistrationForm, UserUpdateForm, ProfileForm
+from django.db.models import Q
+from taggit.models import Tag
+
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -100,6 +103,23 @@ def profile(request):
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileForm(instance=request.user.profile)
     return render(request, 'blog/profile.html', {'u_form': u_form, 'p_form': p_form})
+
+def search_posts(request):
+    query = request.GET.get('q')
+    posts = Post.objects.all()
+    if query:
+        posts = posts.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+    return render(request, 'blog/search_results.html', {'posts': posts, 'query': query})
+
+
+def post_list_by_tag(request, tag_slug):
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    posts = Post.objects.filter(tags__in=[tag])
+    return render(request, 'blog/post_list.html', {'posts': posts, 'tag': tag})
 
 # LIST
 class PostListView(ListView):

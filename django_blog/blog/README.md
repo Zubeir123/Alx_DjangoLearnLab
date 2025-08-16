@@ -1,3 +1,13 @@
+```markdown
+
+### 🏷️ Tagging
+- When creating or editing a post, add tags (comma-separated).
+- Tags display under each post and link to related posts.
+
+### 🔍 Search
+- Use the search bar to find posts by title, content, or tag.
+- URL: `/search/?q=keyword`
+
 #### Views
 
 UserLoginView / UserLogoutView: built-in Django auth views with custom templates.
@@ -42,3 +52,4 @@ python manage.py runserver
 ```
 
 Visit /register to create your first user.
+```

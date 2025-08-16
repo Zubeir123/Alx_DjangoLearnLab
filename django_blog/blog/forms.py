@@ -7,7 +7,7 @@ from .models import Profile, Post, Comment
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content']  # author is set automatically in the view
+        fields = ['title', 'content', 'tags']  # author is set automatically in the view
         widgets = {
             'title': forms.TextInput(attrs={'placeholder': 'Enter a catchy title'}),
             'content': forms.Textarea(attrs={'rows': 10, 'placeholder': 'Write your post...'}),
