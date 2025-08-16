@@ -35,7 +35,7 @@
 
 {% if user.is_authenticated %}
     <h4>Add a comment</h4>
-    <form method="post" action="{% url 'add_comment' post.pk %}">
+    <form method="post" action="{% url 'comment_create' post.pk %}">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Post Comment</button>
@@ -43,3 +43,4 @@
 {% else %}
     <p><a href="{% url 'login' %}">Login</a> to comment.</p>
 {% endif %}
+
