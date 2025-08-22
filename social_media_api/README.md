@@ -120,3 +120,37 @@ python manage.py runserver
 * Users cannot follow/unfollow themselves.
 * Feed shows posts only from users you follow.
 * All endpoints require authentication.
+
+# Likes and Notifications
+## Like Post
+
+```bash
+POST /api/posts/<post_id>/like/
+Authorization: Token <user_token>
+Response: { "message": "Post liked." }
+```
+
+## Unlike Post
+
+```bash
+POST /api/posts/<post_id>/unlike/
+Authorization: Token <user_token>
+Response: { "message": "Post unliked." }
+```
+
+## Fetch Notifications
+
+```pgsql
+GET /api/notifications/
+Authorization: Token <user_token>
+Response: [
+  {
+    "id": 1,
+    "actor_username": "john",
+    "verb": "liked",
+    "target_repr": "My First Post",
+    "timestamp": "2025-08-22T08:00:00Z",
+    "is_read": false
+  }
+]
+```
