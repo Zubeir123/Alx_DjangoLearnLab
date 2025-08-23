@@ -154,3 +154,34 @@ Response: [
   }
 ]
 ```
+
+# Deployment (Production)
+
+## Environment
+* DJANGO_SETTINGS_MODULE=social_media_api.settings_prod
+* DJANGO_SECRET_KEY=***
+* ALLOWED_HOSTS=api.example.com
+* CSRF_TRUSTED_ORIGINS=https://api.example.com
+* DATABASE_URL=postgres://USER:PASSWORD@HOST:PORT/DB
+* SECURE_SSL_REDIRECT=true
+* (Optional S3)
+  - AWS_ACCESS_KEY_ID=***
+  - AWS_SECRET_ACCESS_KEY=***
+  - AWS_STORAGE_BUCKET_NAME=***
+  - AWS_S3_REGION_NAME=***
+
+## One-time setup
+pip install -r requirements.txt
+python manage.py collectstatic --noinput --settings=social_media_api.settings_prod
+python manage.py migrate --settings=social_media_api.settings_prod
+python manage.py createsuperuser --settings=social_media_api.settings_prod
+
+```shell
+### Start (Gunicorn)
+```
+gunicorn social_media_api.wsgi:application --workers 3 --timeout 60
+
+```bash
+### Health check
+- `GET /health/` → `{ "status": "ok" }`
+```
